@@ -1,0 +1,1066 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "QA Hotel API - API for testers\n\n<h2>IMPORTANT! If you need admin privileges:</h2><pre>admin@hotel.local : StrongPa$$word</pre>",
+        "version": "1.0.0",
+        "title": "QA Hotel API",
+        "termsOfService": "",
+        "contact": {
+            "email": "slobodan@qa.rs"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "host": "api.qa.rs",
+    "basePath": "/api",
+    "tags": [
+        {
+            "name": "booking",
+            "description": "API relating to bookings"
+        },
+        {
+            "name": "room_type",
+            "description": "API relating to room types"
+        },
+        {
+            "name": "room",
+            "description": "API relating to rooms"
+        },
+        {
+            "name": "user",
+            "description": "API relating to users"
+        }
+    ],
+    "schemes": [
+        "https"
+    ],
+    "paths": {
+        "/booking": {
+            "post": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Makes a booking",
+                "description": "",
+                "operationId": "addBooking",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Booking object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddBooking"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/BookingDetailsResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Error creating a booking",
+                        "schema": {
+                            "$ref": "#/definitions/GeneralError"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Returns all upcoming bookings sorted by start date",
+                "description": "Requires login as admin",
+                "operationId": "getBookings",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/BookingListShortDetails"
+                        }
+                    }
+                }
+            }
+        },
+        "/booking/{bookingId}": {
+            "get": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Returns booking details",
+                "description": "",
+                "operationId": "getBooking",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "bookingId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the booking to return",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/BookingDetailsResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "booking"
+                ],
+                "summary": "Deletes a booking",
+                "description": "",
+                "operationId": "deleteBooking",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "bookingId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the booking to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/room/": {
+            "get": {
+                "tags": [
+                    "room"
+                ],
+                "summary": "Returns the list of all the rooms in the hotel",
+                "description": "",
+                "operationId": "getRoomList",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomListDetails"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "room"
+                ],
+                "summary": "Adds a new room",
+                "description": "Requires login as admin",
+                "operationId": "addRoom",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Room object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddRoom"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomDetailsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "Not an admin"
+                    }
+                }
+            }
+        },
+        "/room/{roomId}": {
+            "get": {
+                "tags": [
+                    "room"
+                ],
+                "summary": "Returns the list of all the rooms in the hotel",
+                "description": "",
+                "operationId": "getRoomById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "roomId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the room to return",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomDetailsResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "room"
+                ],
+                "summary": "Updates a room",
+                "description": "Requires login as admin",
+                "operationId": "updateRoom",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "roomId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the room to update",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Room object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddRoom"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomDetailsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "Not an admin"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "room"
+                ],
+                "summary": "Deletes a room",
+                "description": "Requires login as admin",
+                "operationId": "deleteRoom",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "roomId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the room to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "Not an admin"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                }
+            }
+        },
+        "/room_type/": {
+            "get": {
+                "tags": [
+                    "room_type"
+                ],
+                "summary": "Returns the list of all the room types",
+                "description": "",
+                "operationId": "getRoomTypeList",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomTypeListDetails"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "room_type"
+                ],
+                "summary": "Adds a new room type",
+                "description": "Requires login as admin",
+                "operationId": "addRoomType",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Room type object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddRoomType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomTypeDetailsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "Not an admin"
+                    }
+                }
+            }
+        },
+        "/room_type/{roomTypeId}": {
+            "get": {
+                "tags": [
+                    "room_type"
+                ],
+                "summary": "Returns the list of all the rooms in the hotel",
+                "description": "",
+                "operationId": "getRoomTypeById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "roomTypeId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the room to return",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomTypeDetailsResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "room_type"
+                ],
+                "summary": "Updates a room type",
+                "description": "Requires login as admin",
+                "operationId": "updateRoomType",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "roomTypeId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the room type to update",
+                        "required": true
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Room type object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddRoomType"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RoomTypeDetailsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "Not an admin"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "room_type"
+                ],
+                "summary": "Deletes a room",
+                "description": "Requires login as admin",
+                "operationId": "deleteRoomType",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "roomTypeId",
+                        "in": "path",
+                        "type": "integer",
+                        "description": "ID of the room type to delete",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Not logged in"
+                    },
+                    "403": {
+                        "description": "Not an admin"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Logs user into the system",
+                "description": "",
+                "operationId": "loginUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Login user object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/LoginUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RegisteredUser"
+                        }
+                    },
+                    "403": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorLogin"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Register user",
+                "description": "Registers new user into the system.",
+                "operationId": "registerUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Registration user object",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegisterUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/RegisteredUser"
+                        }
+                    },
+                    "422": {
+                        "description": "Error",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorRegistering"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{userId}": {
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user",
+                "description": "Deletes existing user from the system.<br>Requires login as admin.",
+                "operationId": "deleteUser",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "ID of the user to delete",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "422": {
+                        "description": "Error"
+                    }
+                }
+
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Return all users",
+                "description": "Return all registered users from the system.<br>Requires login as admin.",
+                "operationId": "allUsers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/AllUsers"
+                        }
+
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Error"
+                    }
+                }
+
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "securityDefinitions": {
+        "bearerAuth": {
+            "name": "Authorization",
+            "in": "header",
+            "type": "apiKey",
+            "description": "JWT"
+        }    },
+    "definitions": {
+        "RoomListDetails": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RoomDetails"
+                    }
+                }
+            }
+        },
+        "RoomDetailsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/RoomDetails"
+                }
+            }
+        },
+        "RoomDetails": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/RoomTypeDetails"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "currency"
+                }
+            }
+        },
+        "AddRoom": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "type_id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "currency"
+                }
+            }
+        },
+        "RoomTypeListDetails": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RoomTypeDetails"
+                    }
+                }
+            }
+        },
+        "AddRoomType": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "beds": {
+                    "type": "integer"
+                },
+                "spaces": {
+                    "type": "integer"
+                },
+                "max_people": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RoomTypeDetailsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/RoomTypeDetails"
+                }
+            }
+        },
+        "RoomTypeDetails": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "beds": {
+                    "type": "integer"
+                },
+                "spaces": {
+                    "type": "integer"
+                },
+                "max_people": {
+                    "type": "integer"
+                }
+            }
+        },
+        "LoginUser": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "RegisterUser": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "password_confirmation": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserFullDetails": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserDetails": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "integer"
+                }
+            }
+        },
+        "RegisteredUser": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/UserFullDetails"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "AllUsers": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/UserDetails"
+                    }
+                }
+            }
+        },
+        "ErrorRegistering": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "errors": {
+                    "type": "object",
+                    "properties": {
+                        "..field_name": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "ErrorLogin": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "GeneralError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                }
+            }
+        },
+        "AddBooking": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "number"
+                },
+                "room_id": {
+                    "type": "number"
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "end_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "people": {
+                    "type": "number"
+                },
+                "with_breakfast": {
+                    "type": "boolean"
+                },
+                "with_lunch": {
+                    "type": "boolean"
+                },
+                "with_dinner": {
+                    "type": "boolean"
+                },
+                "with_minibar": {
+                    "type": "boolean"
+                },
+                "with_laundry": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "BookingDetailsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/BookingDetails"
+                }
+            }
+        },
+        "BookingDetailsShortResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/BookingDetailsShort"
+                }
+            }
+        },
+        "BookingDetails": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/UserDetails"
+                },
+                "room": {
+                    "$ref": "#/definitions/RoomDetails"
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "end_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "amenities": {
+                    "type": "object",
+                    "properties": {
+                        "breakfast": {
+                            "type": "boolean"
+                        },
+                        "lunch": {
+                            "type": "boolean"
+                        },
+                        "dinner": {
+                            "type": "boolean"
+                        },
+                        "minibar": {
+                            "type": "boolean"
+                        },
+                        "laundry": {
+                            "type": "boolean"
+                        }
+
+                    }
+                },
+                "persons": {
+                    "type": "integer"
+                },
+                "total_price": {
+                    "type": "number",
+                    "format": "currency"
+                }
+            }
+        },
+        "BookingDetailsShort": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer"
+                },
+                "room": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "end_date": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "amenities": {
+                    "type": "object",
+                    "properties": {
+                        "breakfast": {
+                            "type": "boolean"
+                        },
+                        "lunch": {
+                            "type": "boolean"
+                        },
+                        "dinner": {
+                            "type": "boolean"
+                        },
+                        "minibar": {
+                            "type": "boolean"
+                        },
+                        "laundry": {
+                            "type": "boolean"
+                        }
+
+                    }
+                },
+                "persons": {
+                    "type": "integer"
+                },
+                "total_price": {
+                    "type": "number",
+                    "format": "currency"
+                }
+            }
+        },
+        "BookingListShortDetails": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BookingDetailsShort"
+                    }
+                }
+            }
+        }
+    }
+}
